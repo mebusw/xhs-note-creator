@@ -1,6 +1,5 @@
-# 小红书笔记创作技能 (XHS Note Creator)
+# 小红书笔记和图片卡片创作技能 (XHS Note Creator)
 
-> OpenClaw Agent Skill for creating Xiaohongshu (小红书) notes with AI-generated content and beautifully styled image cards.
 
 ## 🎯 核心功能
 
@@ -9,7 +8,7 @@
 - 格式化正文（段落清晰，点缀 Emoji）
 - 自动生成 SEO 友好的 Tags
 
-### 2. 图片生成（亮点）
+### 2. 图片卡片生成（亮点）
 - **8 套主题皮肤**：
   - 默认简约灰
   - Playful Geometric（孟菲斯风格）
