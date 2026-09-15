@@ -1,17 +1,19 @@
 ---
 name: xhs-note-creator
-description: 小红书笔记素材创作技能。当用户需要创建小红书笔记素材时使用这个技能。技能包含：根据用户的需求和提供的资料，撰写小红书笔记内容（标题+正文），生成图片卡片（封面+正文卡片），以及发布小红书笔记。
+description: 小红书笔记素材创作技能。当用户需要创建小红书笔记素材时使用这个技能。技能包含：根据用户的需求和提供的资料，撰写小红书笔记内容（标题+正文），生成图片卡片（封面+正文卡片）。
 ---
 
-# 小红书笔记创作技能
+# 小红书笔记和图片卡片创作
 
-这个技能用于创建专业的小红书笔记素材，包括内容撰写、图片卡片生成和笔记发布。
+这个技能用于创建专业的小红书笔记素材，包括内容撰写和图片卡片生成。
+
+> ⚠️ **重要说明**：小红书平台禁止 AI 工具自动登录或发布笔记。本技能只生成可直接在小红书手动发布的素材（标题、正文、图片卡片），由用户自行在小红书 App 或网页端完成发布。
 
 ## 使用场景
 
 - 用户需要创建小红书笔记时
 - 用户提供资料需要转化为小红书风格内容时
-- 用户需要生成精美的图片卡片用于发布时
+- 用户需要生成精美的图片卡片时
 
 ## 工作流程
 
@@ -157,25 +159,23 @@ node scripts/render_xhs.js content.md -t default -m separator
 
 Node.js 参数与 Python 基本一致：`--output-dir/-o`、`--theme/-t`、`--mode/-m`、`--width/-w`、`--height`、`--max-height`、`--dpr`。
 
-### 第四步：发布小红书笔记（可选）
+### 第四步：交付素材，手动发布
 
-使用发布脚本将生成的图片发布到小红书：
+技能完成的内容包括：
+- 一份 Markdown 笔记文档（包含 YAML 头部的封面信息 + 正文内容）
+- 一张封面图：`cover.png`
+- 多张正文卡片图：`card_1.png`、`card_2.png`、...
 
-```bash
-python scripts/publish_xhs.py --title "笔记标题" --desc "笔记描述" --images card_1.png card_2.png cover.png
-```
+**用户手动发布流程**（在小红书 App 或网页端）：
+1. 在浏览器打开 https://www.xiaohongshu.com 并登录
+2. 点击"发布笔记" → 选择"上传图片"
+3. 选择本技能生成的 `cover.png` 和所有 `card_*.png`
+4. 复制笔记文档中的标题到标题字段
+5. 复制笔记文档中的正文到正文字段
+6. 添加 5-10 个相关 Tags
+7. 提交发布
 
-**前置条件**：
-
-1. 需配置小红书 Cookie：
-   - 方式一：设置环境变量 `XHS_COOKIE=your_cookie_string_here`
-   - 方式二（推荐）：从 memory 读取，执行 `memory_search` 检索 `xhs-cookie`，然后从 `memory/xhs-cookie.md` 获取
-
-2. Cookie 获取方式（如需要重新获取）：
-   - 在浏览器中登录小红书（https://www.xiaohongshu.com）
-   - 打开开发者工具（F12）
-   - 在 Network 标签中查看请求头的 Cookie
-   - 获取后保存到 `memory/xhs-cookie.md` 以便后续使用
+> ⚠️ **不要**使用任何脚本或工具自动登录、提交或发布到小红书。平台明确禁止 AI 工具进行此类自动化操作。
 
 ## 图片规格说明
 
@@ -196,7 +196,9 @@ python scripts/publish_xhs.py --title "笔记标题" --desc "笔记描述" --ima
 ### 脚本文件
 - `scripts/render_xhs.py` - Python 渲染脚本
 - `scripts/render_xhs.js` - Node.js 渲染脚本
-- `scripts/publish_xhs.py` - 小红书发布脚本
+- `scripts/render_xhs_v2.py` - Python 渲染脚本（实验性质，支持更多样式）
+- `scripts/render_xhs_v2.js` - Node.js 渲染脚本（实验性质，支持更多样式）
+- `scripts/comment_manager.py` - 评论管理辅助脚本
 
 ### 资源文件
 - `assets/cover.html` - 封面 HTML 模板
@@ -206,7 +208,7 @@ python scripts/publish_xhs.py --title "笔记标题" --desc "笔记描述" --ima
 ## 注意事项
 
 1. Markdown 文件应保存在工作目录，渲染后的图片也保存在工作目录
-2. 技能目录 (`md2Redbook/`) 仅存放脚本和模板，不存放用户数据
+2. 技能目录 (`xhs-note-creator/`) 仅存放脚本和模板，不存放用户数据
 3. 图片尺寸会根据内容自动调整，但保持 3:4 比例
-4. Cookie 有有效期限制，过期后需要重新获取
-5. 发布功能依赖 xhs 库，需要安装：`pip install xhs`
+4. 生成的图片素材由用户自行在小红书平台手动发布，不要使用任何脚本尝试自动登录或发布
+5. 渲染依赖 Playwright 浏览器，需要运行 `playwright install Chrome`
